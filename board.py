@@ -34,6 +34,17 @@ def draw_piece(display, piece, colour, x, y):
     display.blit(piece, (x, y))
 
 
+positions = [
+    ["b-R", "b-N", "b-B", "b-Q", "b-K", "b-B", "b-N", "b-R"],
+    ["b-p"] * 8,
+    [""] * 8,
+    [""] * 8,
+    [""] * 8,
+    [""] * 8,
+    ["w-p"] * 8,
+    ["w-R", "w-N", "w-B", "w-Q", "w-K", "w-B", "w-N", "w-R"]
+]
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -48,41 +59,14 @@ while running:
             pygame.draw.rect(display, colours[colour_idx], pygame.Rect(x * 50, y * 50, 50, 50))
             colour_idx = not colour_idx
 
-    draw_piece(display, "R", "black", 0, 0)
-    draw_piece(display, "N", "black", 1, 0)
-    draw_piece(display, "B", "black", 2, 0)
-    draw_piece(display, "Q", "black", 3, 0)
-    draw_piece(display, "K", "black", 4, 0)
-    draw_piece(display, "B", "black", 5, 0)
-    draw_piece(display, "N", "black", 6, 0)
-    draw_piece(display, "R", "black", 7, 0)
+    for y, row in enumerate(positions):
+        for x, piece in enumerate(row):
+            if piece == "":
+                continue
 
-    draw_piece(display, "p", "black", 0, 1)
-    draw_piece(display, "p", "black", 1, 1)
-    draw_piece(display, "p", "black", 2, 1)
-    draw_piece(display, "p", "black", 3, 1)
-    draw_piece(display, "p", "black", 4, 1)
-    draw_piece(display, "p", "black", 5, 1)
-    draw_piece(display, "p", "black", 6, 1)
-    draw_piece(display, "p", "black", 7, 1)
-
-    draw_piece(display, "R", "white", 0, 7)
-    draw_piece(display, "N", "white", 1, 7)
-    draw_piece(display, "B", "white", 2, 7)
-    draw_piece(display, "Q", "white", 3, 7)
-    draw_piece(display, "K", "white", 4, 7)
-    draw_piece(display, "B", "white", 5, 7)
-    draw_piece(display, "N", "white", 6, 7)
-    draw_piece(display, "R", "white", 7, 7)
-
-    draw_piece(display, "p", "white", 0, 6)
-    draw_piece(display, "p", "white", 1, 6)
-    draw_piece(display, "p", "white", 2, 6)
-    draw_piece(display, "p", "white", 3, 6)
-    draw_piece(display, "p", "white", 4, 6)
-    draw_piece(display, "p", "white", 5, 6)
-    draw_piece(display, "p", "white", 6, 6)
-    draw_piece(display, "p", "white", 7, 6)
+            colour, piece_id = piece.split("-")
+            colour = "black" if colour == "b" else "white"
+            draw_piece(display, piece_id, colour, x, y)
 
     pygame.display.flip()
 
