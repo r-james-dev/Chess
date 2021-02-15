@@ -50,6 +50,21 @@ positions = [
     ["w-R", "w-N", "w-B", "w-Q", "w-K", "w-B", "w-N", "w-R"],
 ]
 
+have_moved = {
+    "pawns": {
+        "black": [0] * 8,
+        "white": [0] * 8
+    },
+    "kings": {
+        "black": 0,
+        "white": 0
+    },
+    "rooks": {
+        "black": [0, 0],
+        "white": [0, 0]
+    }
+}
+
 in_check = {"b": False, "w": False}
 highlighted = []
 selected = None
@@ -69,6 +84,32 @@ while running:
 
             if (x, y) in highlighted and selected is not None:
                 # move piece
+
+                # en passant only possible on first move
+                have_moved["pawns"]["black"] = [
+                    1 if i == 2 else i for i in have_moved["pawns"]["black"]
+                ]
+                have_moved["pawns"]["white"] = [
+                    1 if i == 2 else i for i in have_moved["pawns"]["white"]
+                ]
+
+                if positions[selected[1]][selected[0]].endswith("p"):
+                    if positions[selected[1]][selected[0]].startswith("b"):
+                        col = "black"
+
+                    else:
+                        col = "white"
+
+                    if have_moved["pawns"][col][x] == 0:
+                        if col == "black" and y == 3:
+                            have_moved["pawns"][col][x] = 2
+
+                        elif col == "white" and y == 4:
+                            have_moved["pawns"][col][x] = 2
+
+                        else:
+                            have_moved["pawns"][col][x] = 1
+
                 piece = positions[selected[1]][selected[0]]
                 positions[selected[1]][selected[0]] = ""
                 positions[y][x] = piece
@@ -77,13 +118,14 @@ while running:
                 turn = "black" if turn == "white" else "white"
 
             elif positions[y][x]:
+                # view possible moves
                 if turn == "white" and positions[y][x].startswith("b"):
                     continue
 
                 if turn == "black" and positions[y][x].startswith("w"):
                     continue
 
-                moves = list(find_moves(positions, x, y))
+                moves = list(find_moves(positions, have_moved, x, y))
                 highlighted = []
 
                 if moves:

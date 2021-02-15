@@ -226,7 +226,7 @@ def moves_knight(positions: list, x: int, y: int, colour: str) -> set:
         if x > 1:
             coords.append((x - 2, y - 1))
 
-        if y > 2:
+        if y > 1:
             if x < 7:
                 coords.append((x + 1, y - 2))
 
@@ -246,7 +246,7 @@ def moves_knight(positions: list, x: int, y: int, colour: str) -> set:
     return allowed
 
 
-def moves_pawn(positions: list, x: int, y: int, colour: str) -> set:
+def moves_pawn(positions: list, pre: dict, x: int, y: int, colour: str) -> set:
     allowed = set()
 
     if colour == "b":
@@ -257,11 +257,21 @@ def moves_pawn(positions: list, x: int, y: int, colour: str) -> set:
                 # first move, 2 spaces
                 allowed.update({(x, 3)})
 
-        if x > 0 and positions[y + 1][x - 1].startswith("w"):
-            allowed.update({(x - 1, y + 1)})
+        if x > 0:
+            if positions[y + 1][x - 1].startswith("w"):
+                allowed.update({(x - 1, y + 1)})
 
-        if x < 7 and positions[y + 1][x + 1].startswith("w"):
-            allowed.update({(x + 1, y + 1)})
+            if positions[y][x - 1] == "w-p" and positions[y + 1][x - 1] == "":
+                if pre["pawns"]["white"][x - 1] == 2:
+                    allowed.update({(x - 1, y + 1)})
+
+        if x < 7:
+            if positions[y + 1][x + 1].startswith("w"):
+                allowed.update({(x + 1, y + 1)})
+
+            if positions[y][x + 1] == "w-p" and positions[y + 1][x + 1] == "":
+                if pre["pawns"]["white"][x + 1] == 2:
+                    allowed.update({(x + 1, y + 1)})
 
     elif colour == "w":
         if positions[y - 1][x] == "":
@@ -271,16 +281,26 @@ def moves_pawn(positions: list, x: int, y: int, colour: str) -> set:
                 # first move, 2 spaces
                 allowed.update({(x, 4)})
 
-        if x > 0 and positions[y - 1][x - 1].startswith("b"):
-            allowed.update({(x - 1, y - 1)})
+        if x > 0:
+            if positions[y - 1][x - 1].startswith("b"):
+                allowed.update({(x - 1, y - 1)})
 
-        if x < 7 and positions[y - 1][x + 1].startswith("b"):
-            allowed.update({(x + 1, y - 1)})
+            if positions[y][x - 1] == "b-p" and positions[y - 1][x - 1] == "":
+                if pre["pawns"]["black"][x - 1] == 2:
+                    allowed.update({(x - 1, y - 1)})
+
+        if x < 7:
+            if positions[y - 1][x + 1].startswith("b"):
+                allowed.update({(x + 1, y - 1)})
+
+            if positions[y][x + 1] == "b-p" and positions[y + 1][x - 1] == "":
+                if pre["pawns"]["black"][x + 1] == 2:
+                    allowed.update({(x + 1, y - 1)})
 
     return allowed
 
 
-def find_moves(positions: list, x: int, y: int) -> set:
+def find_moves(positions: list, pre: dict, x: int, y: int) -> set:
     allowed = set()
 
     if positions[y][x]:
@@ -299,6 +319,6 @@ def find_moves(positions: list, x: int, y: int) -> set:
             allowed.update(moves_knight(positions, x, y, colour))
 
         if piece_id == "p":
-            allowed.update(moves_pawn(positions, x, y, colour))
+            allowed.update(moves_pawn(positions, pre, x, y, colour))
 
     return allowed
