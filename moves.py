@@ -293,7 +293,7 @@ def moves_pawn(positions: list, pre: dict, x: int, y: int, colour: str) -> set:
             if positions[y - 1][x + 1].startswith("b"):
                 allowed.update({(x + 1, y - 1)})
 
-            if positions[y][x + 1] == "b-p" and positions[y + 1][x - 1] == "":
+            if positions[y][x + 1] == "b-p" and positions[y - 1][x - 1] == "":
                 if pre["pawns"]["black"][x + 1] == 2:
                     allowed.update({(x + 1, y - 1)})
 
