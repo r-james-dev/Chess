@@ -7,6 +7,7 @@ pygame.init()
 
 display = pygame.display.set_mode((400, 400))
 
+# images courtesy of my shitty pixel art skills
 images = {
     "black": {
         "B": pygame.image.load("assets/b-black.png"),
@@ -111,6 +112,15 @@ while running:
                             have_moved["pawns"][col][x] = 1
 
                 piece = positions[selected[1]][selected[0]]
+                if piece.endswith("p") and positions[y][x] == "":
+                    if selected[0] != x:
+                        # doing en passant
+                        if piece.startswith("b"):
+                            positions[y - 1][x] = ""
+
+                        else:
+                            positions[y + 1][x] = ""
+
                 positions[selected[1]][selected[0]] = ""
                 positions[y][x] = piece
                 highlighted = []
@@ -140,7 +150,9 @@ while running:
     for y in range(8):
         colour_idx = not colour_idx
         for x in range(8):
-            pygame.draw.rect(display, colours[colour_idx], pygame.Rect(x * 50, y * 50, 50, 50))
+            pygame.draw.rect(display, colours[colour_idx], pygame.Rect(
+                x * 50, y * 50, 50, 50
+            ))
             colour_idx = not colour_idx
 
     # highlight spaces
