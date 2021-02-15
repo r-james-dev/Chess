@@ -54,6 +54,8 @@ in_check = {"b": False, "w": False}
 highlighted = []
 selected = None
 
+turn = "white"
+
 running = True
 while running:
     for event in pygame.event.get():
@@ -72,8 +74,15 @@ while running:
                 positions[y][x] = piece
                 highlighted = []
                 selected = None
+                turn = "black" if turn == "white" else "white"
 
             elif positions[y][x]:
+                if turn == "white" and positions[y][x].startswith("b"):
+                    continue
+
+                if turn == "black" and positions[y][x].startswith("w"):
+                    continue
+
                 moves = list(find_moves(positions, x, y))
                 highlighted = []
 
