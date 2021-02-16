@@ -102,13 +102,15 @@ while running:
                         col = "white"
 
                     if have_moved["pawns"][col][x] == 0:
-                        if col == "black" and y == 3:
+                        if col == "black" and y == 3 and selected[0] == x:
+                            print(x, y)
                             have_moved["pawns"][col][x] = 2
 
-                        elif col == "white" and y == 4:
+                        elif col == "white" and y == 4 and selected[0] == x:
+                            print(x, y)
                             have_moved["pawns"][col][x] = 2
 
-                        else:
+                        elif selected[0] == x:
                             have_moved["pawns"][col][x] = 1
 
                 piece = positions[selected[1]][selected[0]]
