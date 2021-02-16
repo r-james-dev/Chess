@@ -322,3 +322,55 @@ def find_moves(positions: list, pre: dict, x: int, y: int) -> set:
             allowed.update(moves_pawn(positions, pre, x, y, colour))
 
     return allowed
+
+
+def calculate_check(positions: list, pre: dict) -> dict:
+    in_check = {"black": False, "white": False}
+
+    for y, rank in enumerate(positions):
+        for x, file in enumerate(rank):
+            available = find_moves(positions, pre, x, y)
+            if not file.endswith("K"):
+                for pos in available:
+                    if positions[pos[1]][pos[0]]:
+                        if positions[pos[1]][pos[0]].endswith("K"):
+                            if positions[pos[1]][pos[0]].startswith("w"):
+                                if file.startswith("b"):
+                                    in_check["white"] = True
+
+                            elif file.startswith("w"):
+                                in_check["black"] = True
+
+    return in_check
+
+
+def find_legal_moves(positions: list, pre: dict, x: int, y: int) -> set:
+    in_check = calculate_check(positions, pre)
+    available = find_moves(positions, pre, x, y)
+    allowed = set()
+    if available:
+        if positions[y][x].startswith("b"):
+            colour = "black"
+
+        else:
+            colour = "white"
+
+        for move in available:
+            piece = positions[y][x]
+            new_positions = [i.copy() for i in positions]
+            new_positions[y][x] = ""
+            new_positions[move[1]][move[0]] = piece
+
+            if piece.endswith("p") and positions[move[1]][move[0]] == "":
+                if x != move[0]:
+                    # en-passant
+                    if colour == "black":
+                        new_positions[move[1] - 1][move[0]] = ""
+
+                    else:
+                        new_positions[move[1] + 1][move[0]] = ""
+
+            if not calculate_check(new_positions, pre)[colour]:
+                allowed.update({(move[0], move[1])})
+
+    return allowed

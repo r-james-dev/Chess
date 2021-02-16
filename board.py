@@ -1,4 +1,4 @@
-from moves import find_moves
+from moves import find_legal_moves
 import os
 os.environ["PYGAME_HIDE_SUPPORT_PROMPT"] = "hide"
 import pygame
@@ -27,7 +27,7 @@ images = {
     }
 }
 
-def draw_piece(display, piece, colour, x, y):
+def draw_piece(display: object, piece: str, colour: str, x: int, y: int):
     x *= 50
     y *= 50
     piece = images[colour][piece]
@@ -36,7 +36,7 @@ def draw_piece(display, piece, colour, x, y):
     display.blit(piece, (x, y))
 
 
-def highlight_square(display, x, y, colour="#FFFF00"):
+def highlight_square(display: object, x: int, y: int, colour: str="#FFFF00"):
     pygame.draw.rect(display, colour, pygame.Rect(x * 50, y * 50, 50, 50))
 
 
@@ -103,11 +103,9 @@ while running:
 
                     if have_moved["pawns"][col][x] == 0:
                         if col == "black" and y == 3 and selected[0] == x:
-                            print(x, y)
                             have_moved["pawns"][col][x] = 2
 
                         elif col == "white" and y == 4 and selected[0] == x:
-                            print(x, y)
                             have_moved["pawns"][col][x] = 2
 
                         elif selected[0] == x:
@@ -137,7 +135,7 @@ while running:
                 if turn == "black" and positions[y][x].startswith("w"):
                     continue
 
-                moves = list(find_moves(positions, have_moved, x, y))
+                moves = list(find_legal_moves(positions, have_moved, x, y))
                 highlighted = []
 
                 if moves:
